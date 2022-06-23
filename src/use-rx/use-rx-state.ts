@@ -35,7 +35,7 @@ export function useRxState<T extends Record<PropertyKey, any>, Mutation = DeepRe
     ...options
   };
 
-  return function (reducers, map$?) {
+  return function (reducers: any, map$?: any) {
     type S = UnwrapNestedRefs<T>;
     type ReducerResult = ReturnType<StateReducer<S, Mutation>>;
     type Actions = ReducerActions<typeof reducers>;
@@ -43,7 +43,7 @@ export function useRxState<T extends Record<PropertyKey, any>, Mutation = DeepRe
     const state = reactive(maybeCall(initialState));
 
     const actions = <Actions> {};
-    const actions$ = <ReducerObservables<Actions, S>> {};
+    const actions$: any = <ReducerObservables<Actions, S>> {};
     const actions$Arr = <Observable<S>[]> [];
 
     let complete = false;
@@ -80,7 +80,7 @@ export function useRxState<T extends Record<PropertyKey, any>, Mutation = DeepRe
                   : complete && mutations$.complete()
               })
             )
-          }, state)(mutations$)
+          }, state as any)(mutations$)
         )
       );
     }
@@ -98,12 +98,12 @@ export function useRxState<T extends Record<PropertyKey, any>, Mutation = DeepRe
           actions$,
           context,
         ).pipe(
-          scan((prev, curr) => mergeKeys(prev, mergeKeys)(curr), state)
+          scan((prev, curr) => mergeKeys(prev as any, mergeKeys)(curr as any) as any, state)
         ) : merged$
       ),
       actions$: actions$ as ReducerObservables<Actions, DeepReadonly<S>>,
     });
-  };
+  } as any;
 }
 
 type CreateRxState<S, Mutation> = {
